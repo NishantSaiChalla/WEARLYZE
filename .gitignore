@@ -1,0 +1,305 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Project specific
+*.pth
+*.pt
+*.onnx
+*.engine
+*.trt
+*.h5
+*.pkl
+*.npy
+*.npz
+
+# Data files (keep data/ folder with Python modules)
+# TRACKED: data/*.py, data/__init__.py, data/README.md
+# IGNORED: actual dataset files, images, annotations
+datasets/
+data/**/*.jpg
+data/**/*.jpeg
+data/**/*.png
+data/**/*.gif
+data/**/*.bmp
+data/**/*.tiff
+data/**/*.mp4
+data/**/*.avi
+data/**/*.mov
+data/**/train/
+data/**/val/
+data/**/test/
+data/**/images/
+data/**/labels/
+data/**/annotations/
+
+# Model files (keep models/ folder with Python modules)
+# TRACKED: models/*.py, models/__init__.py, models/README.md
+# IGNORED: saved model weights, checkpoints
+checkpoints/
+weights/
+pretrained/
+models/**/*.pth
+models/**/*.pt
+models/**/*.onnx
+models/**/*.h5
+models/**/*.pkl
+models/**/checkpoints/
+models/**/weights/
+
+# Outputs
+outputs/
+results/
+runs/
+logs/
+cache/
+test_checkpoints/
+test_yolo_checkpoints/
+*.pth
+*.ckpt
+best_model.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Weights & Biases
+wandb/
+
+# MLflow
+mlruns/
+mlflow.db
+
+# TensorBoard
+events.out.tfevents.*
+
+# Cloud credentials
+*.pem
+*.key
+credentials.json
+service-account.json
+aws_credentials
+.aws/
+*.p12
+*.pfx
+gcp_key.json
+azure_credentials.json
+
+# Large files
+*.tar.gz
+*.zip
+*.tar
+*.gz
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation build
+docs/build/
+docs/source/_build/
+
+# Performance profiling
+*.prof
+*.lprof
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+*.yaml.bak
+*.yml.bak
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+.Trash-*
+
+# FAISS indices
+*.index
+*.faiss
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Config overrides
+config/local_config.yaml
+config/production_config.yaml
+config/*_override.yaml
+
+# S3 cache and fashion detection specific
+.cache/
+**/cache/
+fashion_detection_cache/
+s3_cache/
+
+# Ultralytics YOLO
+yolov8*.pt
+yolov5*.pt
+*.engine
+runs/detect/
+runs/train/
+runs/val/
+ultralytics_cache/
+
+# Experiment tracking files
+training_history.json
+metrics_history.json
+experiment_*.json
+
+# Downloaded models
+*.pt.download
+*.pth.download
+
+# Training artifacts
+last.pt
+best.pt
+epoch_*.pth
+model_*.pth
+
+# Fashion dataset files (root level)
+annotations/
+images/
+masks/
+keypoints/

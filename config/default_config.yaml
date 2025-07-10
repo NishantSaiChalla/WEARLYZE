@@ -1,0 +1,341 @@
+# Fashion Detection System Configuration
+
+# Project settings
+project:
+  name: "fashion_detection"
+  version: "0.1.0"
+  seed: 42
+  device: "cuda"  # cuda or cpu
+  num_gpus: 1
+  mixed_precision: true
+  deterministic: false
+
+# Model configurations
+model:
+  # YOLOv8 settings
+  yolo:
+    model_name: "yolov8x"  # n, s, m, l, x
+    pretrained: true
+    num_classes: 50  # Number of fashion categories
+    conf_threshold: 0.25
+    iou_threshold: 0.45
+    max_detections: 100
+    
+  # CLIP settings
+  clip:
+    model_name: "ViT-B/32"  # ViT-B/32, ViT-B/16, ViT-L/14
+    embedding_dim: 512
+    use_fp16: true
+    
+  # FAISS settings
+  faiss:
+    index_type: "IVF1024,Flat"  # IVF1024,Flat or Flat
+    nprobe: 10
+    use_gpu: true
+    normalize_embeddings: true
+
+# Data configurations
+data:
+  # Dataset paths
+  train_path: "data/train"
+  val_path: "data/val"
+  test_path: "data/test"
+  
+  # Data loading
+  batch_size: 32
+  num_workers: 8
+  pin_memory: true
+  prefetch_factor: 2
+  persistent_workers: true
+  
+  # Image settings
+  image_size: 640  # YOLOv8 input size
+  normalize: true
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  
+  # Augmentation settings
+  augmentation:
+    train:
+      horizontal_flip: 0.5
+      vertical_flip: 0.0
+      rotation: 15
+      scale: 0.1
+      shear: 0.1
+      perspective: 0.0
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.2
+      hue: 0.1
+      blur: 0.01
+      noise: 0.01
+      cutout: 0.1
+      mosaic: 0.5
+      mixup: 0.2
+    val:
+      resize_only: true
+
+# Training configurations
+training:
+  # Optimization
+  optimizer: "AdamW"  # Adam, AdamW, SGD
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  momentum: 0.9  # For SGD
+  betas: [0.9, 0.999]  # For Adam/AdamW
+  
+  # Scheduler
+  scheduler: "cosine"  # cosine, step, exponential, plateau
+  warmup_epochs: 3
+  warmup_lr: 0.0001
+  min_lr: 0.000001
+  
+  # Training settings
+  epochs: 100
+  gradient_clip_val: 1.0
+  gradient_accumulation_steps: 1
+  early_stopping_patience: 10
+  early_stopping_delta: 0.001
+  
+  # Loss weights
+  loss_weights:
+    detection: 1.0
+    classification: 1.0
+    embedding: 0.5
+
+# Evaluation configurations
+evaluation:
+  metrics:
+    - "mAP"
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "accuracy"
+    - "top_k_accuracy"
+  
+  iou_thresholds: [0.5, 0.75, 0.95]
+  top_k: [1, 5, 10]
+  
+  # Similarity search evaluation
+  retrieval_metrics:
+    - "recall_at_k"
+    - "precision_at_k"
+    - "map_at_k"
+  retrieval_k: [1, 5, 10, 20, 50]
+
+# Inference configurations
+inference:
+  # API settings
+  api:
+    host: "0.0.0.0"
+    port: 8000
+    workers: 4
+    cors_origins: ["*"]
+    max_request_size: 100  # MB
+    
+  # Inference settings
+  batch_size: 1
+  return_embeddings: true
+  return_probabilities: true
+  max_results: 100
+
+# Logging and monitoring
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  save_dir: "logs"
+  
+  # Weights & Biases
+  wandb:
+    enabled: true
+    project: "fashion-detection"
+    entity: null  # Your W&B entity
+    tags: ["yolov8", "clip", "fashion"]
+    notes: "Fashion detection training run"
+    
+  # TensorBoard
+  tensorboard:
+    enabled: true
+    log_dir: "runs"
+    
+  # MLflow
+  mlflow:
+    enabled: false
+    tracking_uri: "http://localhost:5000"
+    experiment_name: "fashion_detection"
+
+# Storage configurations
+storage:
+  # Local storage
+  local:
+    cache_dir: "cache"
+    model_dir: "models"
+    output_dir: "outputs"
+    
+  # AWS S3
+  s3:
+    enabled: false
+    bucket: "fashion-detection"
+    region: "us-east-1"
+    prefix: "models"
+    
+  # Google Cloud Storage
+  gcs:
+    enabled: false
+    bucket: "fashion-detection"
+    prefix: "models"
+    
+  # Azure Blob Storage
+  azure:
+    enabled: false
+    container: "fashion-detection"
+    prefix: "models"
+
+# Fashion-specific configurations
+fashion:
+  # Categories
+  categories:
+    - "shirt"
+    - "dress"
+    - "pants"
+    - "skirt"
+    - "jacket"
+    - "coat"
+    - "sweater"
+    - "t-shirt"
+    - "jeans"
+    - "shorts"
+    - "blazer"
+    - "hoodie"
+    - "cardigan"
+    - "vest"
+    - "suit"
+    - "jumpsuit"
+    - "romper"
+    - "leggings"
+    - "sweatpants"
+    - "tank_top"
+    - "blouse"
+    - "tunic"
+    - "kimono"
+    - "poncho"
+    - "overalls"
+    - "tracksuit"
+    - "swimwear"
+    - "underwear"
+    - "socks"
+    - "shoes"
+    - "boots"
+    - "sandals"
+    - "sneakers"
+    - "heels"
+    - "flats"
+    - "bag"
+    - "backpack"
+    - "purse"
+    - "wallet"
+    - "belt"
+    - "hat"
+    - "cap"
+    - "scarf"
+    - "gloves"
+    - "sunglasses"
+    - "watch"
+    - "necklace"
+    - "bracelet"
+    - "earrings"
+    - "ring"
+    
+  # Attributes
+  attributes:
+    colors:
+      - "black"
+      - "white"
+      - "gray"
+      - "red"
+      - "blue"
+      - "green"
+      - "yellow"
+      - "orange"
+      - "purple"
+      - "pink"
+      - "brown"
+      - "beige"
+      - "navy"
+      - "multicolor"
+      
+    patterns:
+      - "solid"
+      - "striped"
+      - "plaid"
+      - "floral"
+      - "polka_dot"
+      - "animal_print"
+      - "geometric"
+      - "abstract"
+      - "camouflage"
+      
+    materials:
+      - "cotton"
+      - "polyester"
+      - "wool"
+      - "silk"
+      - "denim"
+      - "leather"
+      - "linen"
+      - "velvet"
+      - "synthetic"
+      
+    styles:
+      - "casual"
+      - "formal"
+      - "business"
+      - "sport"
+      - "vintage"
+      - "bohemian"
+      - "minimalist"
+      - "streetwear"
+      - "luxury"
+
+# Hardware optimization
+optimization:
+  # ONNX export
+  onnx:
+    enabled: false
+    opset_version: 16
+    dynamic_axes: true
+    simplify: true
+    
+  # TensorRT
+  tensorrt:
+    enabled: false
+    fp16: true
+    int8: false
+    workspace_size: 4  # GB
+    
+  # Quantization
+  quantization:
+    enabled: false
+    backend: "qnnpack"  # qnnpack, fbgemm
+    calibration_samples: 1000
+
+# Deployment configurations
+deployment:
+  # Docker
+  docker:
+    base_image: "pytorch/pytorch:2.0.0-cuda11.8-cudnn8-runtime"
+    port: 8000
+    
+  # Kubernetes
+  kubernetes:
+    replicas: 3
+    cpu_request: "2"
+    memory_request: "4Gi"
+    gpu_request: "1"
+    
+  # Model serving
+  serving:
+    framework: "torchserve"  # torchserve, triton, bentoml
+    batch_size: 8
+    max_batch_delay: 100  # ms
+    timeout: 30  # seconds
