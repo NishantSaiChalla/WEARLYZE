@@ -1,0 +1,106 @@
+# DeepFashion2 Training Configuration
+
+# Experiment settings
+experiment:
+  name: "deepfashion2_yolov8_segmentation"
+  output_dir: "./outputs/deepfashion2"
+  use_wandb: false  # Set to true if you want to use Weights & Biases
+  wandb_project: "deepfashion2-segmentation"
+  viz_interval: 5  # Visualize predictions every N epochs
+
+# Dataset settings
+dataset:
+  root_dir: "/media/kunwar-padda/Gold/DeepFashion2/deepfashion2_original_images"
+  categories: null  # Use all 13 categories, or specify list like [1, 2, 3]
+  load_keypoints: true
+  cache_dir: "./cache/deepfashion2"  # For caching if using S3
+
+# Model settings
+model:
+  model_size: "yolov8s-seg.pt"  # Small model to save memory
+  input_size: 480  # Reduced size to save memory
+  pretrained_path: null  # Path to pretrained model (optional)
+  num_classes: 13  # DeepFashion2 has 13 clothing categories
+
+# Training settings
+training:
+  epochs: 100
+  batch_size: 2  # Further reduced for 8GB GPU with segmentation
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  num_workers: 4  # Reduced to save memory
+  mixed_precision: true  # Enable for faster training
+  gradient_accumulation: 8  # Accumulate gradients to simulate batch_size=16
+  patience: 15  # Early stopping patience
+
+# Loss weights
+loss:
+  box_weight: 7.5  # Bounding box loss weight
+  cls_weight: 0.5  # Classification loss weight  
+  seg_weight: 1.0  # Segmentation loss weight
+  focal_gamma: 1.5  # Focal loss gamma
+  label_smoothing: 0.0
+
+# Data augmentation settings
+augmentation:
+  # Spatial augmentations
+  random_flip: 0.5
+  random_rotate: 15  # Max rotation angle
+  random_scale: [0.8, 1.2]  # Scale range
+  random_crop: 0.3
+  
+  # Color augmentations
+  brightness: 0.2
+  contrast: 0.2
+  saturation: 0.2
+  hue: 0.1
+  
+  # Advanced augmentations
+  mixup: 0.2
+  cutmix: 0.1
+  mosaic: 0.5
+  copy_paste: 0.3  # Copy-paste augmentation for segmentation
+
+# Evaluation settings
+evaluation:
+  compute_ap: true  # Compute Average Precision
+  compute_miou: true  # Compute mean IoU
+  compute_dice: true  # Compute Dice coefficient
+  iou_thresholds: [0.5, 0.75]  # IoU thresholds for evaluation
+  conf_threshold: 0.25  # Confidence threshold for predictions
+  nms_threshold: 0.45  # NMS threshold
+
+# Fashion categories mapping
+categories:
+  1: "short_sleeved_shirt"
+  2: "long_sleeved_shirt"  
+  3: "short_sleeved_outwear"
+  4: "long_sleeved_outwear"
+  5: "vest"
+  6: "sling"
+  7: "shorts"
+  8: "trousers"
+  9: "skirt"
+  10: "short_sleeved_dress"
+  11: "long_sleeved_dress"
+  12: "vest_dress"
+  13: "sling_dress"
+
+# Visualization settings
+visualization:
+  max_instances: 10  # Maximum instances to visualize per image
+  mask_alpha: 0.5  # Transparency for segmentation masks
+  colors: # RGB colors for each category
+    1: [255, 0, 0]      # Red
+    2: [0, 255, 0]      # Green
+    3: [0, 0, 255]      # Blue
+    4: [255, 255, 0]    # Yellow
+    5: [255, 0, 255]    # Magenta
+    6: [0, 255, 255]    # Cyan
+    7: [128, 0, 0]      # Maroon
+    8: [0, 128, 0]      # Dark Green
+    9: [0, 0, 128]      # Navy
+    10: [128, 128, 0]   # Olive
+    11: [128, 0, 128]   # Purple
+    12: [0, 128, 128]   # Teal
+    13: [255, 165, 0]   # Orange

@@ -627,3 +627,22 @@ def get_transforms(
                                 std=[0.229, 0.224, 0.225]))
     
     return T.Compose(transforms)
+
+
+def get_augmentation_pipeline(
+    mode: str = 'train',
+    image_size: Union[int, Tuple[int, int]] = 640,
+    augmentation_config: Optional[Dict[str, Any]] = None
+) -> T.Compose:
+    """
+    Get augmentation pipeline for DeepFashion2 training.
+    
+    Args:
+        mode: 'train' or 'val'
+        image_size: Target image size
+        augmentation_config: Augmentation configuration dict
+        
+    Returns:
+        Transform pipeline
+    """
+    return get_transforms(mode, image_size, augmentation_config)

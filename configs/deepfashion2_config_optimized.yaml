@@ -1,0 +1,60 @@
+# DeepFashion2 Training Configuration - Memory Optimized
+# This configuration prevents system crashes by limiting memory usage
+
+experiment:
+  name: "deepfashion2_yolov8_optimized"
+  output_dir: "outputs/deepfashion2"
+  use_wandb: false  # Disable to save memory
+  wandb_project: "deepfashion2"
+  viz_interval: 10  # Less frequent visualizations
+
+dataset:
+  root_dir: "/path/to/deepfashion2"  # Update this path
+  categories: null  # Use all categories
+  load_keypoints: false  # Disable to save memory
+
+model:
+  model_size: "m"  # Use medium model instead of x-large
+  pretrained_path: null
+  input_size: 640
+
+training:
+  # Reduced batch size for memory safety
+  batch_size: 8  # Reduced from 32
+  epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  
+  # Memory-efficient data loading
+  num_workers: 2  # Reduced from 8
+  
+  # Gradient accumulation to simulate larger batch
+  gradient_accumulation_steps: 4  # Effective batch size = 8 * 4 = 32
+  
+  # Early stopping
+  patience: 10
+  
+  # Mixed precision for memory efficiency
+  mixed_precision: true
+
+loss:
+  box_weight: 7.5
+  cls_weight: 0.5
+  seg_weight: 2.5
+
+augmentation:
+  # Basic augmentations only
+  horizontal_flip: 0.5
+  vertical_flip: 0.0
+  rotation: 10
+  scale: 0.1
+  brightness: 0.1
+  contrast: 0.1
+  # Disable heavy augmentations
+  mosaic: 0.0  # Disabled - memory intensive
+  mixup: 0.0   # Disabled - memory intensive
+
+# Validation settings
+validation:
+  batch_size: 4  # Even smaller for validation
+  save_predictions: false  # Don't save to reduce I/O
