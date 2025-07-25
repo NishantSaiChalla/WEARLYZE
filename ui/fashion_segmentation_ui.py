@@ -72,6 +72,13 @@ def hex_to_rgb(hex_color):
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
+def get_contrasting_color(bg_color):
+    """Get a contrasting color (black or white) based on background brightness."""
+    # Calculate perceived brightness
+    r, g, b = bg_color
+    brightness = (r * 299 + g * 587 + b * 114) / 1000
+    return (0, 0, 0) if brightness > 128 else (255, 255, 255)
+
 def create_mask_overlay(image, masks, classes, confidences, alpha=0.5):
     """Create colored overlay for segmentation masks."""
     
@@ -107,7 +114,7 @@ def create_mask_overlay(image, masks, classes, confidences, alpha=0.5):
     return result
 
 def create_individual_segments(image, masks, classes, confidences, boxes):
-    """Extract individual clothing items as separate images."""
+    """Extract individual clothing items as separate images with labels."""
     
     segments = []
     img_array = np.array(image)
@@ -182,37 +189,40 @@ def segment_fashion(image):
             x1, y1, x2, y2 = map(int, box)
             class_name = class_names[int(cls_idx)]
             color = CLASS_COLORS.get(class_name, '#FFFFFF')
+            color_rgb = hex_to_rgb(color)
             
             # Draw bounding box
             draw.rectangle([x1, y1, x2, y2], outline=color, width=3)
             
-            # Draw label
+            # Draw label with contrasting text
             label = f"{class_name}: {conf:.2f}"
             bbox = draw.textbbox((x1, y1), label, font=font)
-            draw.rectangle(bbox, fill=color)
-            draw.text((x1, y1), label, fill='white', font=font)
+            # Add padding to the text box
+            padding = 4
+            bbox_padded = (bbox[0]-padding, bbox[1]-padding, bbox[2]+padding, bbox[3]+padding)
+            draw.rectangle(bbox_padded, fill=color)
+            # Use contrasting color for text
+            text_color = get_contrasting_color(color_rgb)
+            draw.text((x1, y1), label, fill=text_color, font=font)
             
             detected_items.append(f"- {class_name} (confidence: {conf:.2f})")
         
         # Create individual segments
         segments = create_individual_segments(image, masks, classes, confidences, boxes)
         
-        # Create segment gallery
+        # Create segment gallery with labels
         if segments:
-            segment_images = []
+            segment_data = []
             for seg_img, label in segments[:6]:  # Limit to 6 segments
                 seg_pil = Image.fromarray(seg_img.astype(np.uint8))
-                # Add label to image
-                draw = ImageDraw.Draw(seg_pil)
-                draw.text((10, 10), label, fill='black', font=font)
-                segment_images.append(seg_pil)
+                segment_data.append((seg_pil, label))
         else:
-            segment_images = None
+            segment_data = None
         
         # Create summary
         summary = f"Detected {len(detected_items)} clothing items:\n" + "\n".join(detected_items)
         
-        return overlay_pil, segment_images, summary
+        return overlay_pil, segment_data, summary
         
     except Exception as e:
         logger.error(f"Error during segmentation: {e}")
@@ -279,7 +289,9 @@ def create_ui():
                 elem_id="gallery",
                 columns=3,
                 rows=2,
-                height="auto"
+                height="auto",
+                object_fit="contain",
+                preview=True
             )
         
         # Legend
