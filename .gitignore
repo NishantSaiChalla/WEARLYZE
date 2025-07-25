@@ -303,3 +303,6 @@ annotations/
 images/
 masks/
 keypoints/
+
+ui/local_clip_model/
+ui/assets/
