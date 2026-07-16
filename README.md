@@ -1,211 +1,85 @@
-# Fashion Detection System
+# WEARLYZE
 
-A comprehensive fashion detection system that combines state-of-the-art computer vision models (YOLOv8) with vision-language models (CLIP) for accurate fashion item detection, classification, and similarity search.
+WEARLYZE is a collaborative computer-vision prototype for detecting, segmenting,
+classifying, and retrieving fashion items. The repository brings together YOLOv8,
+CLIP, FAISS, DeepFashion/DeepFashion2 data tooling, and an interactive Gradio UI.
 
-## Features
+## What is in this repository
 
-- **Object Detection**: YOLOv8-based detection of fashion items in images
-- **Multi-modal Understanding**: CLIP integration for text-based fashion search
-- **Similarity Search**: FAISS-powered vector similarity search for finding similar fashion items
-- **Scalable Architecture**: Designed for production deployment with cloud storage support
-- **Experiment Tracking**: Integrated with Weights & Biases for model training monitoring
-- **API Support**: FastAPI-based inference server for real-time predictions
+- Dataset loaders, transformations, sampling, and optional S3-backed data access
+- YOLOv8 detection and segmentation components for fashion categories
+- CLIP embeddings, FAISS similarity search, classifiers, and ensemble utilities
+- DeepFashion2 conversion, training, evaluation, mask generation, and visualization
+- Training configuration, checkpointing, scheduling, and experiment utilities
+- A Gradio interface for inspecting segmentation results
 
-## Project Structure
+This is a research and development codebase. Datasets, trained weights, and other
+large artifacts are not included in the repository.
 
-```
-fashion_detection/
-├── config/              # Configuration files
-│   ├── __init__.py
-│   └── default_config.yaml
-├── data/               # Data loading and preprocessing
-│   └── __init__.py
-├── models/             # Model architectures
-│   └── __init__.py
-├── training/           # Training scripts
-│   └── __init__.py
-├── evaluation/         # Evaluation metrics
-│   └── __init__.py
-├── utils/              # Utility functions
-│   └── __init__.py
-├── inference/          # Inference pipeline
-│   └── __init__.py
-├── tests/              # Unit tests
-│   └── __init__.py
-├── requirements.txt    # Project dependencies
-├── setup.py           # Package installation
-└── README.md          # This file
+## Repository map
+
+```text
+config/        Core configuration
+configs/       DeepFashion2 training configurations
+data/          Dataset, loader, transform, and S3 utilities
+models/        Detection, classification, embedding, ensemble, and retrieval code
+training/      Training loop, scheduler, checkpoint, and experiment utilities
+utils/         Evaluation metrics and visualizations
+ui/            Gradio segmentation interface
+train.py       Unified training entry point
 ```
 
-## Installation
+## Setup
 
-### Prerequisites
-
-- Python 3.8 or higher
-- CUDA 11.8+ (for GPU support)
-- 16GB+ RAM recommended
-- 50GB+ free disk space for models and data
-
-### Basic Installation
+Python 3.8 or newer is required. A CUDA-capable environment is recommended for
+training, but the exact PyTorch installation should match the target machine.
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/fashion-detection.git
-cd fashion-detection
+git clone https://github.com/NishantSaiChalla/WEARLYZE.git
+cd WEARLYZE
 
-# Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install the package
-pip install -e .
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-### GPU Installation
+## Entry points
 
-For GPU support with CUDA:
+Inspect the unified trainer options:
 
 ```bash
-# Install PyTorch with CUDA support
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-
-# Install with GPU extras
-pip install -e ".[gpu]"
+python train.py --help
 ```
 
-## Quick Start
-
-### 1. Configuration
-
-Edit `config/default_config.yaml` to set up your environment:
-
-```yaml
-model:
-  yolo_model: "yolov8x.pt"
-  clip_model: "ViT-B/32"
-  
-data:
-  batch_size: 32
-  num_workers: 4
-  
-training:
-  epochs: 100
-  learning_rate: 0.001
-```
-
-### 2. Training
-
-Train a new model:
+Inspect the DeepFashion2-specific trainer options:
 
 ```bash
-fashion-train --config config/default_config.yaml
+python train_deepfashion2.py --help
 ```
 
-### 3. Inference
-
-Run inference on an image:
+After installing the UI-specific dependencies and providing compatible local
+model artifacts, launch the Gradio interface:
 
 ```bash
-fashion-detect --image path/to/image.jpg --output results/
+python -m pip install -r ui/requirements.txt
+python ui/fashion_segmentation_ui.py
 ```
 
-### 4. API Server
+See [ui/README.md](ui/README.md), [data/README.md](data/README.md), and
+[models/README.md](models/README.md) for subsystem notes. Some experiments need
+local dataset paths, pretrained weights, or service credentials before they can
+run.
 
-Start the inference API server:
+## Contributions and ownership
 
-```bash
-uvicorn inference.api:app --reload
-```
-
-## Dataset Structure
-
-The system expects datasets in the following format:
-
-```
-dataset/
-├── train/
-│   ├── images/
-│   └── labels/
-├── val/
-│   ├── images/
-│   └── labels/
-└── test/
-    ├── images/
-    └── labels/
-```
-
-## Models
-
-### YOLOv8
-- Used for object detection and bounding box prediction
-- Supports various model sizes: n, s, m, l, x
-- Custom trained on fashion-specific datasets
-
-### CLIP
-- Used for vision-language understanding
-- Enables text-based fashion search
-- Provides rich feature embeddings for similarity search
-
-### FAISS
-- Efficient similarity search and clustering
-- Supports both CPU and GPU implementations
-- Scales to millions of fashion items
-
-## Development
-
-### Running Tests
-
-```bash
-pytest tests/ -v --cov=fashion_detection
-```
-
-### Code Formatting
-
-```bash
-# Format code with black
-black fashion_detection/
-
-# Check code style
-flake8 fashion_detection/
-
-# Type checking
-mypy fashion_detection/
-```
-
-### Pre-commit Hooks
-
-```bash
-pre-commit install
-pre-commit run --all-files
-```
-
-## API Documentation
-
-Once the API server is running, visit:
-- Interactive API docs: http://localhost:8000/docs
-- API specification: http://localhost:8000/openapi.json
+WEARLYZE is a team project. [CONTRIBUTIONS.md](CONTRIBUTIONS.md) records a
+verified contribution slice for Kunwarbir Singh Padda based on Git authorship;
+it is not an exhaustive allocation of team ownership.
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- YOLOv8 by Ultralytics
-- CLIP by OpenAI
-- FAISS by Facebook Research
-- PyTorch community
-
-## Contact
-
-For questions and support:
-- Email: your.email@example.com
-- Issues: https://github.com/yourusername/fashion-detection/issues
+1. Create a focused branch.
+2. Keep generated datasets, weights, credentials, and local outputs out of Git.
+3. Describe the data and model assumptions needed to reproduce the change.
+4. Run the smallest relevant test or smoke check and include the result in the PR.
